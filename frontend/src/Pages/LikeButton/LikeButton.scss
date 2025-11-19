@@ -1,0 +1,21 @@
+.LikeButton-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+
+  button {
+    font-size: 1.9vw;
+    padding: 2px 30px;
+    border-radius: 10px;
+    background-color: rgb(197, 71, 75);
+    color: white;
+    border-color: white;
+  }
+
+  button:hover {
+    background-color: rgb(158, 13, 18);
+    cursor: pointer;
+  }
+}

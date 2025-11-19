@@ -1,0 +1,275 @@
+package com.backend.backkend.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.backend.backkend.entity.PostEntity;
+import com.backend.backkend.entity.ReportEntity;
+import com.backend.backkend.entity.UserEntity;
+import com.backend.backkend.repository.PostRepository;
+import com.backend.backkend.repository.ReportRepository;
+import com.backend.backkend.repository.UserRepository;
+import com.backend.backkend.utils.JwtUtil;
+import com.backend.backkend.utils.EncryptUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
+import java.net.URI;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+
+@RestController
+@RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
+public class PostController {
+
+    @Autowired
+    PostRepository postRepo;
+
+    @Autowired
+    UserRepository userRepo;
+
+    @Autowired
+    JwtUtil jwtUtil;
+
+    @Autowired
+    Cloudinary cloudinary;
+
+    // ========== VALIDATE TOKEN ==========
+    private String validate(HttpServletRequest req) {
+        String h = req.getHeader("Authorization");
+        if (h == null || !h.startsWith("Bearer ")) return null;
+
+        String t = h.substring(7);
+        return jwtUtil.validate(t) ? jwtUtil.extractUserId(t) : null;
+    }
+    
+    @Autowired
+    ReportRepository reportRepo;
+
+    @PostMapping("/posts/report")
+    public Object reportPost(@RequestBody Map<String, String> body, HttpServletRequest req) {
+
+        String uid = validate(req);
+        if (uid == null) return Map.of("error", "Unauthorized");
+
+        String pid = body.get("postId");
+        String reason = body.get("reason");
+
+        String postId = EncryptUtil.decrypt(pid);
+
+        PostEntity p = postRepo.findById(postId).orElse(null);
+        if (p == null) return Map.of("error", "Post not found");
+
+        // ========== GENERATE R01 / R02 / R03 ==========
+        long count = reportRepo.count() + 1;
+        String reportId = String.format("R%02d", count);
+
+        // ========== SAVE REPORT ==========
+        ReportEntity r = new ReportEntity();
+        r.setId(reportId);
+        r.setPostId(postId);
+        r.setReportedBy(uid);
+        r.setOwnerId(p.getUserId());
+        r.setReason(reason);
+
+        reportRepo.save(r);
+
+        return Map.of("message", "Report submitted", "reportId", reportId);
+    }
+
+
+
+    // ========== CREATE POST ==========
+    @PostMapping("/posts/create")
+    public Object createPost(
+            @RequestParam("image") MultipartFile file,
+            @RequestParam("text") String text,
+            HttpServletRequest req
+    ) {
+        String uid = validate(req);
+        if (uid == null) return Map.of("error","Unauthorized");
+
+        try {
+            Map upload = cloudinary.uploader().upload(
+                    file.getBytes(),
+                    ObjectUtils.asMap("resource_type", "auto")
+            );
+
+            String url = (String) upload.get("secure_url");
+
+            // Generate P01/P02
+            long count = postRepo.count() + 1;
+            String postId = String.format("P%02d", count);
+
+            PostEntity p = new PostEntity();
+            p.setId(postId);
+            p.setImageUrl(url);
+            p.setText(text);
+            p.setUserId(uid);
+            p.setLikecount(0);
+
+            postRepo.save(p);
+
+            // ✅ ADD POST ID TO USER
+            UserEntity user = userRepo.findById(uid).orElse(null);
+            if (user != null) {
+                user.getPostIds().add(postId);
+                userRepo.save(user);   // save updated user
+            }
+
+            return Map.of(
+                    "message", "Post created",
+                    "pid", EncryptUtil.encrypt(postId)
+            );
+
+        } catch (Exception e) {
+            return Map.of("error", "Upload failed", "detail", e.getMessage());
+        }
+    }
+
+
+
+    // ========== FEED (ALL POSTS) ==========
+    @GetMapping("/posts/feed")
+    public Object feed(HttpServletRequest req) {
+
+        String uid = validate(req);
+        if (uid == null) return Map.of("error", "Unauthorized");
+
+        return postRepo.findAll().stream().map(p -> {
+            Map<String, Object> safe = new HashMap<>();
+
+            safe.put("pid", EncryptUtil.encrypt(p.getId()));
+            safe.put("imageKey", EncryptUtil.encrypt(p.getImageUrl()));
+            safe.put("text", p.getText());
+            safe.put("likecount", p.getLikecount());
+            safe.put("liked", p.getLikedBy().contains(uid));
+
+            UserEntity u = userRepo.findById(p.getUserId()).orElse(null);
+            safe.put("userName", u != null ? u.getName() : "Unknown");
+
+            return safe;
+
+        }).collect(Collectors.toList());
+    }
+
+    // ========== USER'S OWN POSTS ==========
+    @GetMapping("/posts/user-secure/{userId}")
+    public Object userPosts(
+            @PathVariable String userId,
+            HttpServletRequest req
+    ) {
+
+        String uid = validate(req);
+        if (uid == null || !uid.equals(userId))
+            return Map.of("error", "Unauthorized");
+
+        return postRepo.findByUserId(userId).stream().map(p -> {
+
+            Map<String, Object> safe = new HashMap<>();
+            safe.put("pid", EncryptUtil.encrypt(p.getId()));
+            safe.put("imageKey", EncryptUtil.encrypt(p.getImageUrl()));
+            safe.put("text", p.getText());
+            safe.put("likecount", p.getLikecount());
+            safe.put("liked", p.getLikedBy().contains(uid));
+
+            return safe;
+
+        }).collect(Collectors.toList());
+    }
+
+    // ========== LIKE / UNLIKE POST ==========
+    @PostMapping("/posts/like/{pid}")
+    public Object likePost(@PathVariable String pid, HttpServletRequest req) {
+
+        String uid = validate(req);
+        if (uid == null) return Map.of("error", "Unauthorized");
+
+        String postId = EncryptUtil.decrypt(pid);
+
+        PostEntity p = postRepo.findById(postId).orElse(null);
+        if (p == null) return Map.of("error", "Post not found");
+
+        List<String> likedBy = p.getLikedBy();
+
+        if (likedBy.contains(uid)) {
+            // UNLIKE
+            likedBy.remove(uid);
+            p.setLikecount(p.getLikecount() - 1);
+        } else {
+            // LIKE
+            likedBy.add(uid);
+            p.setLikecount(p.getLikecount() + 1);
+        }
+
+        postRepo.save(p);
+
+        return Map.of(
+                "message", "Success",
+                "liked", likedBy.contains(uid),
+                "likecount", p.getLikecount()
+        );
+    }
+
+    // ========== SERVE IMAGE VIA REDIRECT ==========
+    @GetMapping("/posts/image/{key}")
+    public Object serveImage(@PathVariable String key) {
+        String url = EncryptUtil.decrypt(key);
+
+        return org.springframework.http.ResponseEntity
+                .status(302)
+                .location(URI.create(url))
+                .build();
+    }
+    
+ // ========== CREATE 20 SAMPLE POSTS ==========
+    @PostMapping("/posts/createsample")
+    public Object createSamplePosts(HttpServletRequest req) {
+
+        String uid = validate(req);
+        if (uid == null) return Map.of("error", "Unauthorized");
+
+        try {
+            // Placeholder image - No upload to Cloudinary
+            String sampleImage = "https://picsum.photos/600/800";
+
+            UserEntity user = userRepo.findById(uid).orElse(null);
+            if (user == null) return Map.of("error", "User not found");
+
+            List<String> newPostIds = new ArrayList<>();
+
+            for (int i = 1; i <= 20; i++) {
+
+                long count = postRepo.count() + 1;
+                String postId = String.format("P%02d", count);
+
+                PostEntity p = new PostEntity();
+                p.setId(postId);
+                p.setUserId(uid);
+                p.setImageUrl(sampleImage);
+                p.setText("This is sample post number " + i);
+                p.setLikecount(0);
+
+                postRepo.save(p);
+
+                newPostIds.add(postId);
+                user.getPostIds().add(postId);
+            }
+
+            userRepo.save(user);
+
+            return Map.of(
+                "message", "20 sample posts created successfully",
+                "createdPosts", newPostIds
+            );
+
+        } catch (Exception e) {
+            return Map.of("error", "Creation failed", "detail", e.getMessage());
+        }
+    }
+
+}

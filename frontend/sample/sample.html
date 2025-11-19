@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post</title>
+    <link rel="stylesheet" href="sample.css">
+</head>
+<body>
+    <div class="create-post-container">
+        <h1>Create New Post</h1>
+        
+        <div class="form-group">
+            <label for="image-upload">Upload Image</label>
+            <div class="file-input-wrapper">
+                <input type="file" id="image-upload" class="file-input" accept="image/*">
+                <label for="image-upload" class="file-input-button">
+                    <i>📷</i> Choose an image
+                </label>
+            </div>
+            <div class="selected-file" id="selected-file" style="display: none;">
+                <i>✓</i> <span id="file-name"></span>
+            </div>
+            <div class="image-preview" id="image-preview"></div>
+        </div>
+        
+        <div class="form-group">
+            <label for="post-text">Post Description</label>
+            <textarea 
+                id="post-text" 
+                placeholder="Share what's on your mind..." 
+                maxlength="500"
+            ></textarea>
+            <div class="char-count" id="char-count">0/500</div>
+        </div>
+        
+        <button class="submit-button" id="submit-button">
+            <span>Create Post</span>
+        </button>
+        
+        <div class="info-text">
+            <p>Supported formats: JPG, PNG, GIF</p>
+            <p>Maximum file size: 5MB</p>
+        </div>
+    </div>
+
+    
+</body>
+</html>

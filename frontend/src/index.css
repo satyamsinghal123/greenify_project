@@ -1,0 +1,29 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
+html, body{
+  height: 100%;
+  width: 100%;
+}
+
+@font-face {
+  font-family: secret_Nature;
+  src: url('./Pages/Assets/font/Secret\ Nature.ttf');
+}
+
+@font-face {
+  font-family: ringbell;
+  src: url('./Pages/Assets/font/Ring\ Bells.ttf');
+}
+
+.secret{
+  font-family: secret_Nature;
+}
+
+.ringbell{
+  font-family: ringbell;
+}
+
+
