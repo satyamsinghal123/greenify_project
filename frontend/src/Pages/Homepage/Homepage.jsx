@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "../Homepage/Homepage.css";
 import Reportpage from "../Reportpage/Reportpage";
+import PostCard from "../../Components/PostCard/PostCard";
 
 function Homepage() {
   const [posts, setPosts] = useState([]);
@@ -12,15 +14,20 @@ function Homepage() {
   const token = sessionStorage.getItem("token");
   const userId = sessionStorage.getItem("userId");
 
+  const navigate = useNavigate();
+
+  const openUserProfile = (userKey) => {
+    navigate(`/user/${userKey}`);
+  };
+
   // LOAD FEED
   useEffect(() => {
     const loadFeed = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(
-          "http://localhost:8080/api/posts/feed",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const res = await axios.get("http://localhost:8080/api/posts/feed", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setPosts(res.data);
       } catch (err) {
         console.error("Feed error:", err);
@@ -43,7 +50,9 @@ function Homepage() {
 
       setPosts((prev) =>
         prev.map((p) =>
-          p.pid === pid ? { ...p, likecount: res.data.likecount, liked: res.data.liked } : p
+          p.pid === pid
+            ? { ...p, likecount: res.data.likecount, liked: res.data.liked }
+            : p
         )
       );
     } catch (err) {
@@ -66,7 +75,7 @@ function Homepage() {
           reason,
         },
         {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
@@ -94,7 +103,9 @@ function Homepage() {
           <span className="leaf-icon">🌿</span>
           Greenify Community
         </div>
-        <p className="page-subtitle">Share your sustainable journey and inspire others</p>
+        <p className="page-subtitle">
+          Share your sustainable journey and inspire others
+        </p>
       </div>
 
       {posts.length === 0 ? (
@@ -106,54 +117,14 @@ function Homepage() {
       ) : (
         <div className="posts-grid">
           {posts.map((post) => (
-            <div key={post.pid} className="post-card">
-              {/* USER HEADER */}
-              <div className="post-header">
-                <div className="user-avatar">
-                  {post.userName?.charAt(0).toUpperCase() || 'U'}
-                </div>
-                <div className="user-info">
-                  <span className="username">{post.userName || 'Anonymous'}</span>
-                  <span className="post-time">Recently</span>
-                </div>
-              </div>
-
-              {/* IMAGE */}
-              <div className="media-container">
-                <img
-                  src={`http://localhost:8080/api/posts/image/${post.imageKey}`}
-                  alt="Sustainable living post"
-                  className="post-image"
-                />
-                <div className="image-overlay"></div>
-              </div>
-
-              {/* TEXT CONTENT */}
-              <div className="post-content">
-                <p className="post-text">{post.text}</p>
-                
-                {/* ACTIONS */}
-                <div className="post-actions">
-                  <button 
-                    className={`like-btn ${post.liked ? 'liked' : ''}`} 
-                    onClick={() => handleLike(post.pid)}
-                  >
-                    <span className="like-icon">
-                      {post.liked ? '❤️' : '🤍'}
-                    </span>
-                    <span className="like-count">{post.likecount || 0}</span>
-                  </button>
-
-                  <button
-                    className="report-btn"
-                    onClick={() => openReportModal(post.pid)}
-                  >
-                    <span className="report-icon">⚠️</span>
-                    Report
-                  </button>
-                </div>
-              </div>
-            </div>
+            <PostCard
+              key={post.pid}
+              post={post}
+              onLike={handleLike}
+              onReport={openReportModal}
+              onUserClick={openUserProfile}
+              showMenu={true}
+            />
           ))}
         </div>
       )}

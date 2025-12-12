@@ -12,7 +12,7 @@ public class PostEntity {
     private String imageUrl;
     private String text;
     private String userId;
-    private Integer likecount = 0;
+    private int likecount = 0;
 
     private List<String> likedBy = new ArrayList<>();  // NEW FIELD
 
@@ -25,13 +25,14 @@ public class PostEntity {
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     public String getText() { return text; }
-    public void setText(String text) { this.text = text; }
+    public void setText(String text) 
+    { this.text = text; }
 
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
 
-    public Integer getLikecount() { return likecount; }
-    public void setLikecount(Integer likecount) { this.likecount = likecount; }
+    public int getLikecount() { return likecount; }
+    public void setLikecount(int i) { this.likecount = i; }
 
     public List<String> getLikedBy() { return likedBy; }
     public void setLikedBy(List<String> likedBy) { this.likedBy = likedBy; }

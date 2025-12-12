@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../Signuppage/Signuppage.css";
+import "../Signuppage/Signuppage.scss";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -8,19 +8,26 @@ function Signuppage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [gender, setGender] = useState("");
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (password !== confirmPassword) {
       alert("Passwords don't match!");
       return;
     }
 
     if (password.length < 6) {
-      alert("Password must be at least 6 characters long!");
+      alert("Password must be at least 6 characters!");
+      return;
+    }
+
+    if (!gender) {
+      alert("Please select gender!");
       return;
     }
 
@@ -28,9 +35,10 @@ function Signuppage() {
 
     try {
       const res = await axios.post("http://localhost:8080/api/register", {
-        name,
+        name: name.trim(),   // IMPORTANT: clean username for stable avatar
         email,
         password,
+        gender
       });
 
       if (res.data.token) {
@@ -39,13 +47,13 @@ function Signuppage() {
         sessionStorage.setItem("name", res.data.name);
         sessionStorage.setItem("profileImage", res.data.profileImage);
 
-        alert("Welcome to Greenify! 🌱");
+        alert("Welcome to Greenify! 🌿");
         navigate("/home");
       } else {
         alert(res.data.message);
       }
     } catch (err) {
-      alert(err.response?.data?.message || "Signup error. Please try again.");
+      alert(err.response?.data?.message || "Signup failed");
     } finally {
       setLoading(false);
     }
@@ -54,9 +62,26 @@ function Signuppage() {
   return (
     <div className="signup-page">
       <div className="signup-container">
-        {/* Left Side - Form */}
+
+        {/* LEFT - HERO (Now on Left like Login) */}
+        <div className="signup-hero">
+          <div className="hero-overlay"></div>
+          <div className="hero-content">
+            <div className="brand-logo">
+              <span className="logo-icon">🌿</span>
+              <h1 className="brand-title">Greenify</h1>
+            </div>
+            <div className="hero-text">
+              <h2>Join Our Eco Community</h2>
+              <p>Be part of a movement towards a sustainable future.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT - FORM (Now on Right like Login) */}
         <div className="signup-form-section">
           <div className="form-container">
+
             <div className="form-header">
               <Link to="/" className="back-link">
                 <span className="back-icon">←</span>
@@ -66,7 +91,9 @@ function Signuppage() {
               <p>Start your sustainable journey with us</p>
             </div>
 
+            {/* FORM */}
             <form onSubmit={handleSubmit} className="signup-form">
+              
               <div className="input-group">
                 <label htmlFor="name">Full Name</label>
                 <div className="input-wrapper">
@@ -84,18 +111,37 @@ function Signuppage() {
               </div>
 
               <div className="input-group">
-                <label htmlFor="email">Email Address</label>
+                <label htmlFor="email">Email</label>
                 <div className="input-wrapper">
                   <span className="input-icon">📧</span>
                   <input
                     id="email"
                     type="email"
-                    placeholder="Enter your email address"
+                    placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     disabled={loading}
                   />
+                </div>
+              </div>
+
+              {/* GENDER */}
+              <div className="input-group">
+                <label htmlFor="gender">Gender</label>
+                <div className="input-wrapper">
+                  <span className="input-icon">👥</span>
+                  <select
+                    id="gender"
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    required
+                    disabled={loading}
+                  >
+                    <option value="">Choose gender</option>
+                    <option value="boy">Boy</option>
+                    <option value="girl">Girl</option>
+                  </select>
                 </div>
               </div>
 
@@ -106,12 +152,11 @@ function Signuppage() {
                   <input
                     id="password"
                     type="password"
-                    placeholder="Create a password (min. 6 characters)"
+                    placeholder="Create password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     disabled={loading}
-                    minLength="6"
                   />
                 </div>
               </div>
@@ -123,7 +168,7 @@ function Signuppage() {
                   <input
                     id="confirmPassword"
                     type="password"
-                    placeholder="Confirm your password"
+                    placeholder="Confirm password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
@@ -136,15 +181,11 @@ function Signuppage() {
                 <label className="agree-checkbox">
                   <input type="checkbox" required />
                   <span className="checkmark"></span>
-                  I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                  I agree to the Terms and Privacy Policy
                 </label>
               </div>
 
-              <button 
-                type="submit" 
-                className={`signup-btn ${loading ? 'loading' : ''}`}
-                disabled={loading}
-              >
+              <button type="submit" className={`signup-btn ${loading ? "loading" : ""}`} disabled={loading}>
                 {loading ? (
                   <>
                     <div className="loading-spinner"></div>
@@ -160,63 +201,12 @@ function Signuppage() {
             </form>
 
             <div className="login-link">
-              <p>
-                Already have an account?{" "}
-                <Link to="/login" className="link">
-                  Sign in here
-                </Link>
-              </p>
+              <p>Already have an account? <Link to="/login" className="link">Sign in</Link></p>
             </div>
+
           </div>
         </div>
 
-        {/* Right Side - Hero */}
-        <div className="signup-hero">
-          <div className="hero-content">
-            <div className="brand-logo">
-              <span className="logo-icon">🌿</span>
-              <h1 className="brand-title">Greenify</h1>
-            </div>
-            
-            <div className="hero-text">
-              <h2>Join Our Eco Community</h2>
-              <p>Be part of a movement towards a sustainable future</p>
-            </div>
-
-            <div className="benefits-grid">
-              <div className="benefit-card">
-                <div className="benefit-icon">🌍</div>
-                <div className="benefit-content">
-                  <h3>Make an Impact</h3>
-                  <p>Share and learn sustainable practices that matter</p>
-                </div>
-              </div>
-              
-              <div className="benefit-card">
-                <div className="benefit-icon">🤝</div>
-                <div className="benefit-content">
-                  <h3>Connect & Grow</h3>
-                  <p>Join a community of environmentally conscious people</p>
-                </div>
-              </div>
-              
-              <div className="benefit-card">
-                <div className="benefit-icon">📈</div>
-                <div className="benefit-content">
-                  <h3>Track Progress</h3>
-                  <p>Document and share your sustainability journey</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="testimonial">
-              <p className="testimonial-text">
-                "Greenify helped me transform my daily habits and connect with amazing people who care about our planet."
-              </p>
-              <p className="testimonial-author">- Sarah, Eco Enthusiast</p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

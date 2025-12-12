@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../Loginpage/Loginpage.css";
+import lbg from "../Assets/images/lbg.gif"
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -72,7 +73,7 @@ function Loginpage() {
         <div className="login-form-section">
           <div className="form-container">
             <div className="form-header">
-              <h2>Sign In to Your Account</h2>
+              <h2>Log In to Your Account</h2>
               <p>Enter your credentials to continue</p>
             </div>
 
@@ -128,12 +129,12 @@ function Loginpage() {
                 {loading ? (
                   <>
                     <div className="loading-spinner"></div>
-                    Signing In...
+                    Logging In...
                   </>
                 ) : (
                   <>
                     <span className="btn-icon">🌱</span>
-                    Sign In
+                    LogIn
                   </>
                 )}
               </button>

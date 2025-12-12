@@ -1,0 +1,190 @@
+/* DonationPage.css */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+.donation-page {
+  min-height: 100vh;
+  background: #f0fdf4;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(116, 235, 213, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(172, 182, 229, 0.15) 0px, transparent 50%);
+  font-family: 'Outfit', sans-serif;
+  padding-bottom: 4rem;
+}
+
+/* Hero Section */
+.donation-hero {
+  background: linear-gradient(135deg, #2d6a4f, #1b4332);
+  color: white;
+  padding: 4rem 2rem;
+  text-align: center;
+  border-radius: 0 0 50px 50px;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.2);
+  margin-bottom: 3rem;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Events Container */
+.events-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.events-container h2 {
+  text-align: center;
+  font-size: 2rem;
+  color: #1b4332;
+  margin-bottom: 2.5rem;
+  position: relative;
+  display: inline-block;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.events-container h2::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: #10b981;
+  border-radius: 2px;
+}
+
+/* Events Grid */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+/* Event Card */
+.event-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+}
+
+.event-image {
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+
+.event-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.event-card:hover .event-image img {
+  transform: scale(1.1);
+}
+
+.event-details {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-details h3 {
+  font-size: 1.5rem;
+  color: #081c15;
+  margin-bottom: 0.5rem;
+}
+
+.event-details p {
+  color: #64748b;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+/* Progress Bar */
+.progress-section {
+  margin-bottom: 1.5rem;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2d6a4f;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  border-radius: 5px;
+  transition: width 1s ease-in-out;
+}
+
+/* Donate Button */
+.donate-btn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #2d6a4f, #40916c);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.donate-btn:hover {
+  background: linear-gradient(135deg, #1b4332, #2d6a4f);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+  
+  .donation-hero {
+    padding: 3rem 1.5rem;
+    border-radius: 0 0 30px 30px;
+  }
+  
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
+}

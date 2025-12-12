@@ -1,22 +1,38 @@
 package com.backend.backkend.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Document("users")
 public class UserEntity {
 
     @Id
     private String id;
+    private String gender;
+    private String avatarSeed;
 
+    
     private String email;
     private String name;
     private String password;
     private String profileImage;
 
+    private String bio = "";   // NEW → Optional user bio
+
     private List<String> postIds = new ArrayList<>();
 
-    public UserEntity() {}  // <-- IMPORTANT
+    // NEW → Followers list (users who follow ME)
+    private List<String> followers = new ArrayList<>();
+
+    // NEW → Following list (users I follow)
+    private List<String> following = new ArrayList<>();
+
+    public UserEntity() {}
+
+    // ===================== GETTERS & SETTERS =====================
 
     public String getId() {
         return id;
@@ -25,6 +41,14 @@ public class UserEntity {
     public void setId(String id) {
         this.id = id;
     }
+    
+    public String getAvatarSeed() {
+        return avatarSeed;
+    }
+    public void setAvatarSeed(String avatarSeed) {
+        this.avatarSeed = avatarSeed;
+    }
+
 
     public String getEmail() {
         return email;
@@ -33,6 +57,15 @@ public class UserEntity {
     public void setEmail(String email) {
         this.email = email;
     }
+    
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
 
     public String getName() {
         return name;
@@ -64,5 +97,32 @@ public class UserEntity {
 
     public void setPostIds(List<String> postIds) {
         this.postIds = postIds;
+    }
+
+    // NEW → Followers
+    public List<String> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(List<String> followers) {
+        this.followers = followers;
+    }
+
+    // NEW → Following
+    public List<String> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(List<String> following) {
+        this.following = following;
+    }
+
+    // NEW → Bio
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 }

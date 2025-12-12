@@ -30,6 +30,7 @@ $shadow-medium: rgba(0, 0, 0, 0.12);
   min-height: 100vh;
   background: linear-gradient(135deg, $light-green 0%, #d5f5e3 100%);
   font-family: 'Inter', sans-serif;
+  
 }
 
 .login-container {
@@ -44,7 +45,13 @@ $shadow-medium: rgba(0, 0, 0, 0.12);
 
 // Left Side - Hero Section
 .login-hero {
-  background: linear-gradient(135deg, $primary-green 0%, $dark-green 100%);
+  // background: url("../Assets/images/lbg.gif");
+  background: url("../Assets/images/lg\ \(4\).gif");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  // background: linear-gradient(135deg, $primary-green 0%, $dark-green 100%);
   color: $white;
   padding: 3rem;
   display: flex;
@@ -56,6 +63,17 @@ $shadow-medium: rgba(0, 0, 0, 0.12);
   @media (max-width: 1024px) {
     padding: 2rem;
     min-height: 300px;
+  }
+
+  &::after{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    content: "";
+    opacity: 0.5;
   }
 
   &::before {
@@ -180,6 +198,10 @@ $shadow-medium: rgba(0, 0, 0, 0.12);
     }
 
     .input-wrapper {
+
+      padding: 0 0;
+      border: none;
+
       position: relative;
 
       .input-icon {
@@ -187,7 +209,7 @@ $shadow-medium: rgba(0, 0, 0, 0.12);
         left: 1rem;
         top: 50%;
         transform: translateY(-50%);
-        font-size: 1.2rem;
+        font-size: 1.2r+em;
         color: $dark-gray;
         z-index: 2;
       }
@@ -202,11 +224,6 @@ $shadow-medium: rgba(0, 0, 0, 0.12);
         transition: all 0.3s ease;
         font-family: 'Inter', sans-serif;
 
-        &:focus {
-          outline: none;
-          border-color: $primary-green;
-          box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
-        }
 
         &:disabled {
           background: $light-gray;
@@ -433,9 +450,3 @@ $shadow-medium: rgba(0, 0, 0, 0.12);
   100% { transform: rotate(360deg); }
 }
 
-// Focus styles
-button:focus,
-input:focus {
-  outline: 2px solid $primary-green;
-  outline-offset: 2px;
-}

@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import "../Navbar/Navbar.css";
+import "./Navbar.scss";
 import { useState } from "react";
 
 function Navbar() {
@@ -57,6 +57,15 @@ function Navbar() {
               >
                 <span className="nav-icon">👤</span>
                 Profile
+              </Link>
+
+              <Link 
+                to="/donation" 
+                className={`nav-link ${location.pathname === '/donation' ? 'active' : ''}`}
+                onClick={closeMobileMenu}
+              >
+                <span className="nav-icon">💝</span>
+                Donation
               </Link>
 
               <button 

@@ -37,7 +37,97 @@ $shadow-medium: rgba(0, 0, 0, 0.12);
   }
 }
 
-// Left Side - Form Section
+// Left Side - Hero Section (Now on Left)
+.signup-hero {
+  background: url("../Assets/images/lg\ \(2\).gif");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: $white;
+  padding: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+
+  @media (max-width: 1024px) {
+    padding: 2rem;
+    min-height: 300px;
+    order: 1; // Ensure it stays on top on mobile if needed, or remove to let it flow naturally
+  }
+
+  &::after{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    content: "";
+    opacity: 0.5;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 500px;
+    width: 100%;
+    text-align: center; // Center text like Login page
+  }
+
+  .brand-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center; // Center logo
+    gap: 1rem;
+    margin-bottom: 3rem;
+
+    .logo-icon {
+      font-size: 3rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .brand-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .hero-text {
+    margin-bottom: 3rem;
+
+    h2 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      line-height: 1.6;
+      margin: 0;
+    }
+  }
+}
+
+// Right Side - Form Section (Now on Right)
 .signup-form-section {
   @include flex-center;
   padding: 2rem;
@@ -55,6 +145,7 @@ $shadow-medium: rgba(0, 0, 0, 0.12);
 
   .form-header {
     margin-bottom: 2.5rem;
+    text-align: center; // Center header like Login page
 
     .back-link {
       display: inline-flex;
@@ -103,6 +194,9 @@ $shadow-medium: rgba(0, 0, 0, 0.12);
     }
 
     .input-wrapper {
+      padding: 0 0;
+      border: none;
+
       position: relative;
 
       .input-icon {
@@ -110,12 +204,12 @@ $shadow-medium: rgba(0, 0, 0, 0.12);
         left: 1rem;
         top: 50%;
         transform: translateY(-50%);
-        font-size: 1.2rem;
+        font-size: 1.2r+em;
         color: $dark-gray;
         z-index: 2;
       }
 
-      input {
+      input, select {
         width: 100%;
         padding: 1rem 1rem 1rem 3rem;
         border: 2px solid $medium-gray;
@@ -127,8 +221,8 @@ $shadow-medium: rgba(0, 0, 0, 0.12);
 
         &:focus {
           outline: none;
-          border-color: $primary-green;
-          box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+          border-color: $primary-green; // Simple border color change like Login
+          // box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1); // Removed extra shadow to match Login
         }
 
         &:disabled {
@@ -272,144 +366,6 @@ $shadow-medium: rgba(0, 0, 0, 0.12);
   }
 }
 
-// Right Side - Hero Section
-.signup-hero {
-  background: linear-gradient(135deg, $primary-green 0%, $dark-green 100%);
-  color: $white;
-  padding: 3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-
-  @media (max-width: 1024px) {
-    padding: 2rem;
-    min-height: 400px;
-    order: 1;
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-      radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    max-width: 500px;
-    width: 100%;
-  }
-
-  .brand-logo {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-
-    .logo-icon {
-      font-size: 3rem;
-      animation: float 3s ease-in-out infinite;
-    }
-
-    .brand-title {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin: 0;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-  }
-
-  .hero-text {
-    margin-bottom: 3rem;
-
-    h2 {
-      font-size: 2.2rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    p {
-      font-size: 1.2rem;
-      opacity: 0.9;
-      line-height: 1.6;
-      margin: 0;
-    }
-  }
-
-  .benefits-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin-bottom: 3rem;
-
-    .benefit-card {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      padding: 1.5rem;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      transition: transform 0.3s ease;
-
-      &:hover {
-        transform: translateX(10px);
-      }
-
-      .benefit-icon {
-        font-size: 2rem;
-        flex-shrink: 0;
-      }
-
-      .benefit-content {
-        h3 {
-          margin: 0 0 0.5rem 0;
-          font-size: 1.2rem;
-          font-weight: 600;
-        }
-
-        p {
-          margin: 0;
-          font-size: 0.95rem;
-          opacity: 0.9;
-          line-height: 1.5;
-        }
-      }
-    }
-  }
-
-  .testimonial {
-    padding: 2rem;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-
-    .testimonial-text {
-      font-style: italic;
-      margin-bottom: 1rem;
-      line-height: 1.6;
-      font-size: 1.1rem;
-    }
-
-    .testimonial-author {
-      margin: 0;
-      font-weight: 600;
-      opacity: 0.9;
-    }
-  }
-}
-
 // Animations
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
@@ -419,11 +375,4 @@ $shadow-medium: rgba(0, 0, 0, 0.12);
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-// Focus styles
-button:focus,
-input:focus {
-  outline: 2px solid $primary-green;
-  outline-offset: 2px;
 }
